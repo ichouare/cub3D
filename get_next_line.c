@@ -6,7 +6,7 @@
 /*   By: ichouare <ichouare@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 10:13:14 by ichouare          #+#    #+#             */
-/*   Updated: 2023/05/29 15:40:07 by ichouare         ###   ########.fr       */
+/*   Updated: 2023/05/30 15:45:15 by ichouare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,10 @@ static char	*heandler_next_line(char **svr, char *line)
 	return (line);
 }
 
-static char	*handler_line( char **svr, char **buffer, int fd)
+static char	*handler_line( char **svr, char **buffer, int fd, int BUFFER_SIZE)
 {
 	char			*tmp;
 	ssize_t			sz;
-	
 
 	sz = 1;
 	while (ft_strchr(*svr, '\n') == 0 && sz != 0)
@@ -96,6 +95,7 @@ char	*get_next_line(int fd)
 	char		*buffer;
 	static char	*svr;
 	char		*line;
+	int BUFFER_SIZE = 1;
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
@@ -105,7 +105,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (!svr)
 		svr = ft_substr(buffer, 0, found_nl(buffer, '\0'));
-	svr = handler_line(&svr, &buffer, fd);
+	svr = handler_line(&svr, &buffer, fd, BUFFER_SIZE);
 	if (!svr)
 		return (NULL);
 	free(buffer);

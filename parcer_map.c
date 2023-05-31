@@ -31,11 +31,9 @@ int ft_lastindex(char *str, int find)
     return -1;
 }
 
-int main()
+int parcer_map(t_vars *vs)
 {
     char *tmp = NULL;
-    char ***texture = NULL;
-    char **store_map = NULL;
     char **color = NULL;
     int i = 0;
     int fd= open("./map/map.cub", O_RDONLY);
@@ -53,17 +51,17 @@ int main()
         free(tmp);
         
     }
-    texture = calloc(sizeof(char *), 7);
-    store_map = calloc(sizeof(char *), (i - 5));
+    vs->texture = calloc(sizeof(char *), 7);
+    vs->store_map = calloc(sizeof(char *), (i - 5));
     close(fd);
     i = 0;
-    // stote data fo texture in 2D array format
+    // stote data fo vs->texture in 2D array format
     while(i < 6)
     {
         tmp = get_next_line(fd1);
         if(tmp[0] != '\n')
         {
-            texture[i] = ft_split(tmp, ' ');
+            vs->texture[i] = ft_split(tmp, ' ');
             i++;
         }
         free(tmp);
@@ -75,7 +73,7 @@ int main()
     {
         if(tmp[0] != '\n')
         {
-            store_map[i] = strdup(tmp);
+            vs->store_map[i] = strdup(tmp);
             i++;
         }
         free(tmp);
@@ -83,44 +81,58 @@ int main()
     }
     i = 0;
     int j = 0;
-    while(texture[i] != NULL)
+    while(vs->texture[i] != NULL)
     {
-        if(strlen(texture[i][0]) == 2)
+        if(strlen(vs->texture[i][0]) == 2)
         {
-            if(strncmp(texture[i][0], "ON", 2) == 0 || strncmp(texture[i][0], "SO", 2) == 0
-            || strncmp(texture[i][0], "WE", 2) == 0 || strncmp(texture[i][0], "EA", 2) == 0)
+            if(strncmp(vs->texture[i][0], "NO", 2) == 0 || strncmp(vs->texture[i][0], "SO", 2) == 0
+            || strncmp(vs->texture[i][0], "WE", 2) == 0 || strncmp(vs->texture[i][0], "EA", 2) == 0)
+            {
                 j++;
+            }
+            else
+            {   
+                printf("vs->texture not available");
+                return(0);
+            }
         }
-        else if(strlen(texture[i][0]) == 1)
+        else if(strlen(vs->texture[i][0]) == 1)
         {
-            if( strncmp(texture[i][0], "F",1) == 0|| strncmp(texture[i][0], "C",1) == 0)
-                j++;  
+            if( strncmp(vs->texture[i][0], "F",1) == 0|| strncmp(vs->texture[i][0], "C",1) == 0)
+                j++;
+            else
+            {
+                    puts("heref");
+                printf("vs->texture not available");
+                return(0);
+            }  
         }
         else
         {
-            perror("texture don't  respect the rules");
-            exit(1);
+            perror("vs->texture don't  respect the rules");
+            return(0);
         }
        i++;
     }
-    if(j != i - 1)
+    if(i != j)
     {
-        perror("texture don't  respect the rules");
-        exit(0);
+        // puts("here");
+        perror("vs->texture don't  respect the rules");
+        return(0);
     }
     // j = 0;
     i = 0;
-    while(i <= j)
+    while(i < j)
     {
          int k = 0;
-         while(texture[k] != NULL)
+         while(vs->texture[k] != NULL)
          {
             if(k == i)
               k++;
-            else if(strcmp(texture[k][0], texture[i][0]) == 0)
+            else if(strcmp(vs->texture[k][0], vs->texture[i][0]) == 0)
             {
-                printf("texture duplicated");
-                exit(1);
+                printf("vs->texture duplicated");
+                return(0);
             }
             k++;
 
@@ -129,11 +141,13 @@ int main()
     }
     i = 0;
     close(fd);
-    while(texture[i] != NULL)
+    while(vs->texture[i] != NULL)
     {
-        if(strncmp(texture[i][0], "F", 1) == 0 || strncmp(texture[i][0], "C", 1) == 0)
+        if(strncmp(vs->texture[i][0], "F", 1) == 0 || strncmp(vs->texture[i][0], "C", 1) == 0)
         {
-            tmp = ft_substr(texture[i][1], 0, strlen(texture[i][1]) - 1);
+            tmp = ft_substr(vs->texture[i][1], 0, strlen(vs->texture[i][1]) - 1);
+            if(tmp == NULL)
+                return(0);
             color = ft_split(tmp, ',');
             free(tmp);
             j = 0;
@@ -142,7 +156,7 @@ int main()
                 if(ft_isalpha(color[j]) == -1 || ft_atoi(color[j]) < 0 || ft_atoi(color[j]) > 255)
                 {
                     printf("color not acceptable");
-                    exit(0);
+                    return(0);
                 }
                 j++;
             }
@@ -150,17 +164,21 @@ int main()
         }
         else
         {
-            tmp = ft_substr(texture[i][1], 0, strlen(texture[i][1]) - 1);
+            tmp = ft_substr(vs->texture[i][1], 0, strlen(vs->texture[i][1]) - 1);
+            if(tmp == NULL)
+                return(0);
             fd = open(tmp, O_RDWR);
             if(fd < 0)
-                exit(0);
+                return(0);
             free(tmp);
             tmp = ft_substr(tmp, ft_lastindex(tmp, '.'), strlen(tmp));
+            if(tmp == NULL)
+                return(0);
             if(strncmp(tmp, ".xpm", strlen(tmp)) != 0)
-                    exit(0);
+                    return(0);
             free(tmp);
             i++;
         }
     }
-    printf("texture available");
+    return(1);
 }
