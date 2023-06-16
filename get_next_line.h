@@ -57,6 +57,7 @@ typedef struct vars{
     t_data *data;
     double hitH;
     double hitV;
+    int doors; //
     int isRayFacingUp;
     int isRayFacingDown;
     int isRayFacingRight;

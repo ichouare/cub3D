@@ -90,7 +90,8 @@ int ft_steps(t_vars *vars, double angle)
 		&& (int)vars->dx/64 >=  0 
 		&& (int)vars->dy/64 <= 13 
 		&& (int)vars->dx/64 < (int)strlen(vars->store_map[(int)vars->dy/64])
-		&& vars->store_map[(int)(vars->dy + offset) / 64][(int)vars->dx / 64] != '1' )
+		&& vars->store_map[(int)(vars->dy + offset) / 64][(int)vars->dx / 64] != '1'
+		&& vars->store_map[(int)(vars->dy + offset) / 64][(int)vars->dx / 64] != 'P' )
 		{
 				vars->dx += stepsx;
 				vars->dy += stepsy;
@@ -131,7 +132,8 @@ int ft_stepsV(t_vars *vars, double angle)
 	(int)vars->dyV/64 <=  13 &&
 	(int)(vars->dxV/64) >=  0 &&
 	 (int)vars->dxV/64 < (int)strlen(vars->store_map[(int)vars->dyV / 64])
-	  && vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] != '1')
+	  && vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] != '1'
+	  && vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] != 'P')
 		{
 				vars->dxV += stepsx;
 				vars->dyV += stepsy;	
@@ -181,7 +183,7 @@ void * ft_facing(t_vars *vars, double angle, int offsetx, int  offsety)
 				}
 				else
 				{
-						img->img = vars->texture_N;
+						img->img = vars->texture_E;
 						img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
 						buf = img->addr + (offsety * img->line_length + offsetx * (img->bits_per_pixel / 8));
 				}
@@ -355,6 +357,13 @@ void draw_wall(t_vars *vars, int i, double angle)
 	heightrayon = (windowHeight / 2 ) - (wallheightStrip / 2);
 	vars->wallStripHeight = wallheightStrip;
 	 ft_floor(vars, i,  0, i, heightrayon , create_trgb(1, 255, 225, 100));
+	if(vars->store_map[(int)vars->dy / 64][(int)vars->dx / 64] == 'P')
+	{
+		ft_floor(vars, withrayon, heightrayon, withrayon, (windowHeight / 2 ) + (wallheightStrip / 2), create_trgb(1, 100, 25, 100));
+	}
+	else
+	{
+
 	if(vars->hitV > vars->hitH)
 			{
 				if(sin(angle) < 0)
@@ -383,6 +392,7 @@ void draw_wall(t_vars *vars, int i, double angle)
 				}
 			}
 				ft_dda(vars, withrayon, heightrayon, withrayon, (windowHeight / 2 ) + (wallheightStrip / 2), img);
+	}
 			 ft_floor(vars, i,  heightrayon + wallheightStrip, i,(13*64), create_trgb(5, 255, 225, 255));
 	}
 
@@ -681,19 +691,20 @@ int	main(void)
 	vars->img_E = "./wall_N.xpm";
 	// vars->img_W = "./path_to_the_west_texture.xpm";
 	// vars->img_S = "./path_to_the_south_texture.xpm";
-	// vars->img_N = "./path_to_the_north_texture.xpm";
+	vars->img_N = "./path_to_the_north_texture.xpm";
 	
 if (parcer_map(vars) == 0) 
 {
-	// puts("here55");
+	
+	puts("here55");
 	return 0;
 }
 	vars->mlx = mlx_init();
 	vars->texture_N = mlx_xpm_file_to_image(vars->mlx,vars->img_E, &width, &height);
-	// vars->texture_E = mlx_xpm_file_to_image(vars->mlx,vars->img_E, &width, &height);
+	vars->texture_E = mlx_xpm_file_to_image(vars->mlx,vars->img_N, &width, &height);
 	// vars->texture_S = mlx_xpm_file_to_image(vars->mlx,vars->img_S, &width, &height);
 	// vars->texture_W = mlx_xpm_file_to_image(vars->mlx,vars->img_W, &width, &height);
-	if(vars->texture_N == NULL)
+	if(vars->texture_E  == NULL)
 	{
 		exit(0);
 	}
