@@ -34,6 +34,7 @@ int ft_lastindex(char *str, int find)
 int parcer_map(t_vars *vs)
 {
     char *tmp = NULL;
+    char **arr = NULL;
     char **color = NULL;
     int i = 0;
     int fd= open("./map/map.cub", O_RDONLY);
@@ -173,38 +174,45 @@ int parcer_map(t_vars *vs)
 
         i++;
     }
-    puts("here");
-        // else
-        // {
-        //     tmp = ft_substr(vs->texture[i][1], 0, strlen(vs->texture[i][1]) - 1);
-        //     if(tmp == NULL)
-        //         return(0);
-        //     fd = open(tmp, O_RDWR);
-        //     if(fd < 0)
-        //         return(0);
-        //     if(*tmp)
-        //         free(tmp);
-        //     tmp = ft_substr(tmp, ft_lastindex(tmp, '.'), strlen(tmp));
-        //     if(tmp == NULL)
-        //         return(0);
-        //     if(strncmp(tmp, ".xpm", strlen(tmp)) != 0)
-        //             return(0);
-        //     free(tmp);
-        //     i++;
-        // }
-    
     i = 0;
-    j = 0;
-    while(vs->store_map[i])
+    while(vs->texture[i] != NULL)
     {
-        j= 0;
-        while(vs->store_map[i][j])
-        {
-            printf("%c", vs->store_map[i][j]);
-            j++;
-        }
+       if(strcmp(vs->texture[i][0], "NO") == 0)
+            vs->img_N = ft_substr(vs->texture[i][1], 0,found_nl(vs->texture[i][1], '\n'));
+       if(strcmp(vs->texture[i][0], "SO") == 0)
+            vs->img_S = ft_substr(vs->texture[i][1], 0,found_nl(vs->texture[i][1], '\n'));
+       if(strcmp(vs->texture[i][0], "WE") == 0)
+            vs->img_W = ft_substr(vs->texture[i][1], 0,found_nl(vs->texture[i][1], '\n'));
+       if(strcmp(vs->texture[i][0], "EA") == 0)
+            vs->img_E =ft_substr(vs->texture[i][1], 0,found_nl(vs->texture[i][1], '\n'));
+       if(strcmp(vs->texture[i][0], "F") == 0)
+           {
+                vs->fl_ceil = calloc(sizeof(int *), 4);
+                j = 0;
+                arr = ft_split(vs->texture[i][1], ',');
+                while(j < 3)
+                {   
+                    vs->fl_ceil[j] = ft_atoi(arr[j]);
+                    // free(arr[j]);
+                    j++;
+                }
+
+           }
+        if(strcmp(vs->texture[i][0], "C") == 0)
+           {
+                // i = 0;
+                vs->fl_floor = calloc(sizeof(int *), 4);
+                j = 0;
+                arr = ft_split(vs->texture[i][1], ',');
+                while(j < 3)
+                {   
+                    vs->fl_floor[j] = ft_atoi(arr[j]);
+                    free(arr[j]);
+                    j++;
+                }
+           }
         i++;
     }
-    // while(1);
+    free(arr);
     return(1);
 }

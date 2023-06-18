@@ -2,6 +2,9 @@
 
 
 double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
+#define window_width 1920
+#define window_height 1080
+static int h = 0;
 	double *k;
 int	create_trgb(int t, int r, int g, int b)
 {
@@ -68,7 +71,7 @@ int ft_steps(t_vars *vars, double angle)
 	int offset = 0;
 	
 	
-	dy = (floor)((vars->player_y) / 64) * 64;
+	dy = (int)((vars->player_y) / 64) * 64;
 	if(sin(angle) > 0)
 	{
 		dy += 64; 
@@ -86,19 +89,19 @@ int ft_steps(t_vars *vars, double angle)
 	}
 	stepsx = stepsy / tan(angle);
 		while(
-			(int)vars->dy/64 >= 0 
-		&& (int)vars->dx/64 >=  0 
-		&& (int)vars->dy/64 <= 13 
-		&& (int)vars->dx/64 < (int)strlen(vars->store_map[(int)vars->dy/64])
-		&& vars->store_map[(int)(vars->dy + offset) / 64][(int)vars->dx / 64] != '1'
-		&& vars->store_map[(int)(vars->dy + offset) / 64][(int)vars->dx / 64] != 'P' )
+		vars->dy >= 0 
+		&& vars->dy/64 < 14
+		&& vars->dx/64 >=  0 
+		&& vars->dx/64 < 33
+		&&  (int)vars->dx/64 < (int)strlen(vars->store_map[(int)vars->dy / 64])
+		&& vars->store_map[(int)(vars->dy + offset) / 64][(int)(vars->dx ) / 64] != '1')
 		{
 				vars->dx += stepsx;
 				vars->dy += stepsy;
 		}	
 	vars->hitH = sqrt(pow(vars->dx - vars->player_x, 2) + pow(vars->dy - vars->player_y, 2));
-	// if(vars->hitH >= (14* 64))
-	// 	vars->hitH = 14 * 64; 
+	// if(vars->hitH > window_height)
+	// 	vars->hitH = window_height; 
 	// if(vars->hitH < 0)
 	// 	vars->hitH = 0; 
 	return 0;
@@ -128,19 +131,19 @@ int ft_stepsV(t_vars *vars, double angle)
 		 offset = -1;
 	}
 	stepsy = stepsx * tan(angle);
-	while((int)(vars->dyV/64) >= 0 && 
-	(int)vars->dyV/64 <=  13 &&
-	(int)(vars->dxV/64) >=  0 &&
-	 (int)vars->dxV/64 < (int)strlen(vars->store_map[(int)vars->dyV / 64])
-	  && vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] != '1'
-	  && vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] != 'P')
+	while((int)(vars->dyV) >= 0 
+	&& vars->dyV /64< 14
+	&& (int)(vars->dxV) >=  0 
+	&& vars->dxV/64 < 33
+	&&  (int)vars->dxV/64 < (int)strlen(vars->store_map[(int)vars->dyV / 64])
+	  && vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] != '1')
 		{
 				vars->dxV += stepsx;
 				vars->dyV += stepsy;	
 		}
 	 vars->hitV = sqrt(pow(vars->dxV - vars->player_x, 2) + pow(vars->dyV - vars->player_y, 2));
-	//  if(vars->hitV > (30* 64))
-	// 	vars->hitV= 34 * 64; 
+	//  if(vars->hitV > window_width)
+	// 	vars->hitV= window_width; 
 	//  if(vars->hitV < 0)
 	// 	vars->hitV = 0; 
 	return 0;
@@ -166,94 +169,6 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void * ft_facing(t_vars *vars, double angle, int offsetx, int  offsety)
-{
-	 //int color = 0;
-		t_data *img;
-	img =  malloc(sizeof(t_data));
-	void *buf = NULL;
- if(vars->hitV > vars->hitH)
-			{
-				if(sin(angle) < 0)
-				{
-					img->img = vars->texture_N;
-					img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
-					buf = img->addr + (offsety * img->line_length + offsetx * (img->bits_per_pixel / 8));
-
-				}
-				else
-				{
-						img->img = vars->texture_E;
-						img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
-						buf = img->addr + (offsety * img->line_length + offsetx * (img->bits_per_pixel / 8));
-				}
-				
-			}
-		else  
-			{
-				if(cos(angle) < 0)
-				{
-					img->img = vars->texture_N;
-					img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
-					buf = img->addr + (offsety * img->line_length + offsetx * (img->bits_per_pixel / 8));
-
-				} 
-				else
-				{
-					img->img = vars->texture_N;
-					img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
-					buf = img->addr + (offsety * img->line_length + offsetx * (img->bits_per_pixel / 8));
-				}
-			}
-	
-	
-	return buf;
-
-}
-// void ft_dda(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img)
-// {
-// 	int dtx = 0;
-// 	int dty = 0;
-// 	int steps = 0;
-// 	double xinc = 0;
-// 	double yinc = 0;
-// 	void *buf = NULL;
-// 	int offsety = 0;
-// 	int offsetx = 0;	
-// 	double walltopixel = 0;
-
-// 	int m = 1;
-
-// 	dtx = Dx  - x;
-// 	dty = Dy - y;
-// 	if(abs((int)(dtx)) > abs((int)(dty)))
-// 		steps = abs((int)(dtx));
-// 	else
-// 		steps = abs((int)(dty));
-// 	xinc = (double)dtx / (double)steps;
-// 	yinc = (double)dty / (double)steps;
-// 	walltopixel = y;
-// 	// if(walltopixel  < 0)
-// 	// 	walltopixel = 0;
-// 	if(vars->hitH <= vars->hitV)
-// 	{
-// 		offsetx = (fmod(vars->dx , 64)/64.0) * 64;
-// 	}
-// 	else
-// 		offsetx = (fmod(vars->dyV , 64)/64.0) * 64;
-// 	while(m <= steps)
-// 	{
-// 		if(y < 0 || y >= 13*64)
-// 			y = 0;
-// 		offsety = abs((int)(y - walltopixel)) * ((double)(64) / (Dy - walltopixel));
-// 		//unsigned int  color =  *(unsigned int  *)ft_facing(vars, angle, offsetx, offsety);
-// 		buf = img->addr + (offsety * img->line_length + offsetx * (int)(img->bits_per_pixel / 8));
-// 		my_mlx_pixel_put(vars->data,(int)x  , (int)y  ,  *(unsigned int *)buf);
-// 		x += xinc;
-// 		y += yinc;
-// 		m++;
-// 	}
-// }
 
 void ft_floor(t_vars *vars, double x, double y, double Dx, double Dy,int color)
 {
@@ -279,43 +194,40 @@ void ft_floor(t_vars *vars, double x, double y, double Dx, double Dy,int color)
 
 	while(m <= steps)
 	{
-		if(y < 0 || y >= 13*64)
+		if(y < 0 || y >= window_height)
 			y = 0;
-		// offsety = abs((int)(y - walltopixel)) * ((double)(64) / (Dy - walltopixel));
-		// //unsigned int  color =  *(unsigned int  *)ft_facing(vars, angle, offsetx, offsety);
-		// buf = img->addr + (offsety * img->line_length + offsetx * (int)(img->bits_per_pixel / 8));
 		my_mlx_pixel_put(vars->data,(int)x  , (int)y  ,  color);
 		x += xinc;
 		y += yinc;
 		m++;
 	}
 }
-
-void ft_dda(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img)
+void ft_test(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img)
 {
 	int dtx = 0;
 	int dty = 0;
 	int steps = 0;
 	double xinc = 0;
 	double yinc = 0;
-	void *buf = NULL;
+		void *buf = NULL;
 	int offsety = 0;
-	int offsetx = 0;	
+	int offsetx = 0;
 	double walltopixel = 0;
+
+
+	
 
 	int m = 1;
 
 	dtx = Dx  - x;
 	dty = Dy - y;
+	walltopixel = y;
 	if(abs((int)(dtx)) > abs((int)(dty)))
 		steps = abs((int)(dtx));
 	else
 		steps = abs((int)(dty));
 	xinc = (double)dtx / (double)steps;
 	yinc = (double)dty / (double)steps;
-	walltopixel = y;
-	// if(walltopixel  < 0)
-	// 	walltopixel = 0;
 	if(vars->hitH <= vars->hitV)
 	{
 		offsetx = (fmod(vars->dx , 64)/64.0) * 64;
@@ -324,18 +236,66 @@ void ft_dda(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img)
 		offsetx = (fmod(vars->dyV , 64)/64.0) * 64;
 	while(m <= steps)
 	{
-		if(y < 0 || y >= 13*64)
+		if(y < 0 || y >= window_height)
 			y = 0;
 		offsety = abs((int)(y - walltopixel)) * ((double)(64) / (Dy - walltopixel));
-		//unsigned int  color =  *(unsigned int  *)ft_facing(vars, angle, offsetx, offsety);
 		buf = img->addr + (offsety * img->line_length + offsetx * (int)(img->bits_per_pixel / 8));
 		my_mlx_pixel_put(vars->data,(int)x  , (int)y  ,  *(unsigned int *)buf);
 		x += xinc;
 		y += yinc;
 		m++;
 	}
-	
 }
+
+// void ft_dda(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img)
+// {
+// 	int dtx = 0;
+// 	int dty = 0;
+// 	int steps = 0;
+// 	double xinc = 0;
+// 	double yinc = 0;
+// 	//void *buf = NULL;
+// 	int offsety = 0;
+// 	int offsetx = 0;	
+// 	double walltopixel = 0;
+// img = NULL;
+// 	int m = 1;
+
+// 	dtx = Dx  - x;
+// 	dty = Dy - y;
+// 	if(abs((int)(dtx)) > abs((int)(dty)))
+// 		steps = abs((int)(dtx));
+// 	else
+// 		steps = abs((int)(dty));
+// 	xinc = (double)dtx / (double)steps;
+// 	yinc = (double)dty / (double)steps;
+// 	walltopixel = y;
+// 	// if(walltopixel  < 0)
+// 	// 	walltopixel = 0;
+// 	if(vars->hitH <= vars->hitV)
+// 	{
+// 		offsetx = (fmod(vars->dx , 64)/64.0) * 64;
+// 	}
+// 	else
+// 		offsetx = (fmod(vars->dyV , 64)/64.0) * 64;
+// 	while(m <= steps)
+// 	{
+// 		if(y < 0 || y >= window_height)
+// 		{
+// 			puts("Invalid");
+// 			y = 0;
+// 		}
+// 		offsety = abs((int)(y - walltopixel)) * ((double)(64) / (Dy - walltopixel));
+// 		// printf("x :%f --------------- y : %f\n", x, y);
+// 		// //unsigned int  color =  *(unsigned int  *)ft_facing(vars, angle, offsetx, offsety);
+// 		// buf = img->addr + (offsety * img->line_length + offsetx * (int)(img->bits_per_pixel / 8));
+// 		my_mlx_pixel_put(vars->data,(int)x  , (int)y  , *(unsigned int *)buf);
+// 		x += xinc;
+// 		y += yinc;
+// 		m++;
+// 	}
+	
+// }
 void draw_wall(t_vars *vars, int i, double angle)
 {
 	double withrayon = 0;
@@ -348,21 +308,22 @@ void draw_wall(t_vars *vars, int i, double angle)
 		rayDistance = vars->hitV * cos(angle - vars->player_angle);
 	else
 		rayDistance = vars->hitH * cos(angle - vars->player_angle);
-	double windowWith = 33*64;
- double windowHeight = 13*64;
+	double windowWith = window_width;
+ double windowHeight = window_height;
 	double wallheightStrip = 0;
 	double distancetopeoject = (double)(windowWith / 2) / tan(30 * (PI / 180));
-	wallheightStrip = (((double)64 / rayDistance) * distancetopeoject);
+	wallheightStrip = (((double)64 * distancetopeoject ) / rayDistance);
 	withrayon = i;
-	heightrayon = (windowHeight / 2 ) - (wallheightStrip / 2);
+	heightrayon = (windowHeight / 2) - (wallheightStrip / 2);
 	vars->wallStripHeight = wallheightStrip;
-	 ft_floor(vars, i,  0, i, heightrayon , create_trgb(1, 255, 225, 100));
-	if(vars->store_map[(int)vars->dy / 64][(int)vars->dx / 64] == 'P')
-	{
-		ft_floor(vars, withrayon, heightrayon, withrayon, (windowHeight / 2 ) + (wallheightStrip / 2), create_trgb(1, 100, 25, 100));
-	}
-	else
-	{
+	 ft_floor(vars, i,  0, i, heightrayon , create_trgb(1, vars->fl_ceil[0], vars->fl_ceil[1],vars->fl_ceil[2]));
+	// if(vars->store_map[(int)vars->dy / 64][(int)vars->dx / 64] == 'P')
+	// {
+
+	// 	ft_floor(vars, i, heightrayon, i, (windowHeight / 2 ) + (wallheightStrip / 2), create_trgb(1, 100, 25, 100));
+	// }
+	// else
+	// {
 
 	if(vars->hitV > vars->hitH)
 			{
@@ -391,9 +352,11 @@ void draw_wall(t_vars *vars, int i, double angle)
 					img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
 				}
 			}
-				ft_dda(vars, withrayon, heightrayon, withrayon, (windowHeight / 2 ) + (wallheightStrip / 2), img);
-	}
-			 ft_floor(vars, i,  heightrayon + wallheightStrip, i,(13*64), create_trgb(5, 255, 225, 255));
+			
+			
+	// }
+					ft_test(vars, i, heightrayon, i, (windowHeight / 2 ) + (wallheightStrip / 2), img);
+			ft_floor(vars, i,  heightrayon + wallheightStrip, i,window_height, create_trgb(5, vars->fl_floor[0], vars->fl_floor[1], vars->fl_floor[2]));
 	}
 
 void ft_move(t_vars *vars)
@@ -402,7 +365,6 @@ void ft_move(t_vars *vars)
 	double y =  0;
 	double j = 0;
 	double i = 0;
-	// double movespped = 2;
 	if(vars->keys->key_T == 1)
 	{
 			x = vars->player_x + cos(vars->player_angle) * 20;
@@ -518,7 +480,6 @@ void ft_move(t_vars *vars)
 	}
 	if(vars->keys->key_A == 1)
 	{
-		puts("hereX");
 			x = vars->player_x - cos(vars->player_angle + ( PI / 2)) * 20;
 			y  = vars->player_y ;
 			i = x;
@@ -559,10 +520,11 @@ int ft_draw(t_vars *vars)
 	
 	int i = 0;
 	int j = 0;
-
+	// int y = 0;
 	int x = 0;
 	int column = 0;
-	vars->data->img = mlx_new_image(vars->mlx, (33 * 64), (14 * 64));
+	vars->data->img = mlx_new_image(vars->mlx, window_width, window_height);
+	vars->sprite = mlx_new_image(vars->mlx, 64, 64);
 	vars->data->addr = mlx_get_data_addr(vars->data->img,  &vars->data->bits_per_pixel, &vars->data->line_length, &vars->data->endian);
 	mlx_clear_window(vars->mlx, vars->mlx_win);
 	ft_move(vars);
@@ -573,41 +535,14 @@ int ft_draw(t_vars *vars)
 		{
 			if(j  == (int)((vars->player_x ) / 64) && (int)((vars->player_y) / 64) == i )
 			{
-				double angle = vars->player_angle - (vars->field_of_view / 2);
-				// x = -10;
-				// while(x  < 0)
-				// {
-				// 	y = 0;
-				// 	while(y < 10)
-				// 	{  
-				// 		k = 0;
-				// 		while(k < 20)
-				// 		{
-						
-				// 					// mlx_pixel_put(vars->mlx, vars->mlx_win,  (vars->player_x)  +  cos(vars->player_angle) * k ,  (vars-> player_y)  + sin(vars->player_angle) * k, create_trgb(0,100,100,100));
-				// 				k++;
-				// 		}	
-				// 		//mlx_pixel_put(vars->mlx, vars->mlx_win, (vars->player_x)  + x +  cos(vars->player_angle)  , vars->player_y + y  + sin(vars->player_angle), create_trgb(0,200,50,100));
-
-				// 		y++;
-				
-				// 	}
-
-				// 	x++;
-				// }
-				//puts("here");
-				while(angle <= vars->player_angle + (vars->field_of_view / 2) )
+				//mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->attack, vars->player_x, vars->player_y);
+				double angle = vars->player_angle - (vars->field_of_view / 2.0);
+				while(column < vars->num_rays)
 					{
 					 
 					ft_steps(vars, angle);
 					ft_stepsV(vars,  angle);
-					if(vars->hitV <= vars->hitH)
-					{
-						vars->dx = vars->dxV;
-						vars->dy = vars->dyV;
-					}
-					//ft_dda(vars, vars->player_x, vars->player_y, vars->dx, vars->dy, angle);
-			draw_wall(vars, column, angle);
+					draw_wall(vars, column, angle);
 					
 					
 					vars->hitH = 0;
@@ -618,27 +553,38 @@ int ft_draw(t_vars *vars)
 					}
 				x = 0;	
 			}
-			// if(vars->store_map[i][j] == '1')
-			// {
-			// 	x = 0;
-			// 	while(x < 64)
-			// 	{
-			// 		y = 0;
-			// 		while(y < 64)
-			// 		{
-			// 				mlx_pixel_put(vars->mlx, vars->mlx_win, j * 64 + x  , i * 64 + y  , create_trgb(0,100,100,100));
-			// 			y++;
-			// 		}
-			// 		x++;
-			// 	}
-			// }
 			j++;
 		
 		}
+		if(h == 0)
+		{	
+			// puts("hhh");
+			h = 1;
+		}
+		else
+		{
+			// puts("hhsdsh");
+			h = 0;
+		}
 		i++;
 }
+
 mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->data->img, 0, 0);
 mlx_destroy_image(vars->mlx, vars->data->img);
+puts("here");
+printf("%d\n", h);
+if(h == 1)
+{
+	// puts("here_1");
+	// exit(0);
+	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->attack_img, window_width / 2, window_height - 170);
+}
+else
+{
+	// puts("here_2");
+	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->attack_img, window_width / 2, window_height - 200);
+}
+//mlx_destroy_image(vars->mlx, vars->attack_img);
 		vars->keys->key_A = 0;
  		vars->keys->key_w = 0;
  		vars->keys->key_S = 0;
@@ -672,7 +618,7 @@ int	main(void)
 	vars->isRayFacingUp = 0;
 	vars->player_lx  = 0 ;
 	vars->Wall_strip_width = 1;
-	vars->num_rays = (64 * 33);
+	vars->num_rays = window_width;
 	// vars.stepsy = 0;
 	// vars->rays_list = malloc(vars.num_rays * sizeof(int));
 	vars->keys = malloc(sizeof(t_keys));
@@ -692,7 +638,7 @@ int	main(void)
 	// vars->img_W = "./path_to_the_west_texture.xpm";
 	// vars->img_S = "./path_to_the_south_texture.xpm";
 	vars->img_N = "./path_to_the_north_texture.xpm";
-	
+	vars->attack = "./attack.xpm";
 if (parcer_map(vars) == 0) 
 {
 	
@@ -702,13 +648,14 @@ if (parcer_map(vars) == 0)
 	vars->mlx = mlx_init();
 	vars->texture_N = mlx_xpm_file_to_image(vars->mlx,vars->img_E, &width, &height);
 	vars->texture_E = mlx_xpm_file_to_image(vars->mlx,vars->img_N, &width, &height);
+	vars->attack_img= mlx_xpm_file_to_image(vars->mlx,vars->attack, &width, &height);
 	// vars->texture_S = mlx_xpm_file_to_image(vars->mlx,vars->img_S, &width, &height);
 	// vars->texture_W = mlx_xpm_file_to_image(vars->mlx,vars->img_W, &width, &height);
-	if(vars->texture_E  == NULL)
+	if(vars->texture_E  == NULL || vars->attack_img == NULL)
 	{
 		exit(0);
 	}
-	vars->mlx_win = mlx_new_window(vars->mlx, ( 33 * 64) , (14 * 64), "unrecorded");
+	vars->mlx_win = mlx_new_window(vars->mlx, window_width , window_height, "unrecorded");
 
 	int i = 0;
 	int j = 0;
@@ -720,8 +667,8 @@ if (parcer_map(vars) == 0)
 		
 			if(vars->store_map[i][j] == 'N')
 			{
-				vars->player_x = j * 64 +10;
-				vars->player_y = i * 64 +10;
+				vars->player_x = j * 64 + 10;
+				vars->player_y = i * 64 + 10;
 			}
 			j++;
 		}

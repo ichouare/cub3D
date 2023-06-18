@@ -57,6 +57,8 @@ typedef struct vars{
     t_data *data;
     double hitH;
     double hitV;
+    int *fl_floor;
+    int *fl_ceil;
     int doors; //
     int isRayFacingUp;
     int isRayFacingDown;
@@ -71,7 +73,13 @@ typedef struct vars{
     void *img_S;
     void *img_W;
     void *img_E;
+    void *attack;
+    void *attack_img;
+    void *sprite;
+    int height;
+	int width;
     double dy;
+
     
 
 } t_vars;
