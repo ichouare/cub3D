@@ -4,6 +4,29 @@
 #include <stdio.h>
 #include "get_next_line.h"
 
+
+
+int ft_catacter(char *str)
+{
+    int i = 0;
+    while(str[i] != ' ' && str[i] != ' ')
+    {
+        i++;
+    }
+    return i;
+}
+
+int ft_strlen(char *str)
+{
+    int i = 0;
+    if(*str)
+        return -1;
+    while(str[i])
+    {
+        i++;
+    }
+    return i;
+}
 int ft_isalpha(char *str)
 {
     int i;
@@ -41,19 +64,18 @@ int parcer_map(t_vars *vs)
     int fd1 = open("./map/map.cub", O_RDONLY);
     tmp = calloc(2, sizeof(char ));
     if(fd < 0)
-    {
         return -1;
-    }
     tmp = get_next_line(fd);
     while(tmp != NULL)
     {
             i++;
         free(tmp);
         tmp = get_next_line(fd);
-
     }
+    if(i < 6)
+        return 0;
     vs->store_map = calloc(sizeof(char *), (i - 5));
-    vs->texture = calloc(sizeof(char *), 7);
+    vs->texture = calloc(sizeof(char *), 6);
     i = 0;
     while(i < 6)
     {
@@ -62,17 +84,20 @@ int parcer_map(t_vars *vs)
     }
     close(fd);
     i = 0;
+    tmp = get_next_line(fd1);
     // stote data fo vs->texture in 2D array format
-    while(i < 6)
+    while(i < 6 && tmp != NULL)
     {
-        tmp = get_next_line(fd1);
-        if(tmp[0] != '\n')
+        if(tmp[0] != '\n' && ft_catacter(tmp) != 0)
         {
             vs->texture[i] = ft_split(tmp, ' ');
             i++;
         }
         free(tmp);
+        tmp = get_next_line(fd1);
     }
+    if(i != 6)
+        return (0);
     // store data of map items in 2D array  format
     tmp = get_next_line(fd1);
     i = 0;
@@ -81,7 +106,7 @@ int parcer_map(t_vars *vs)
     {
         if(tmp[0] != '\n')
             check = 1;
-        if( check == 1)
+        if(check == 1)
         {
             vs->store_map[i] = strdup(tmp);
             i++;
@@ -92,8 +117,10 @@ int parcer_map(t_vars *vs)
     // free(tmp);
     i = 0;
     int j = 0;
-    while(i < 6)
+    while(vs->texture[i])
     {
+
+       //printf("|%d|", ft_strlen(vs->texture[i][0]));
         if(strlen(vs->texture[i][0]) == 2)
         {
             if(strncmp(vs->texture[i][0], "NO", 2) == 0 || strncmp(vs->texture[i][0], "SO", 2) == 0
@@ -121,20 +148,22 @@ int parcer_map(t_vars *vs)
         else
         {
          
-            return(1);   perror("vs->texture don't  respect the rules");
+            perror("vs->texture don't  respect the rules");
+            return(0);
         }
        i++;
     }
-    if(i != j)
+    if(j != 6)
     {
         perror("vs->texture don't  respect the rules");
         return(0);
     }
     // j = 0;
     i = 0;
-    while(i < j - 1)
+    int k = 0;
+    while(vs->texture[i] != NULL)
     {
-         int k = 0;
+        k = 0;
          while(vs->texture[k] != NULL)
          {
             if(k == i)
@@ -145,10 +174,12 @@ int parcer_map(t_vars *vs)
                 return(0);
             }
             k++;
-
          }  
          i++; 
+        puts("here");
     }
+    //puts("here");
+    puts("here");
     i = 0;
     close(fd);
     while(vs->texture[i] != NULL)
@@ -175,6 +206,7 @@ int parcer_map(t_vars *vs)
         i++;
     }
     i = 0;
+     
     while(vs->texture[i] != NULL)
     {
        if(strcmp(vs->texture[i][0], "NO") == 0)
@@ -200,7 +232,6 @@ int parcer_map(t_vars *vs)
            }
         if(strcmp(vs->texture[i][0], "C") == 0)
            {
-                // i = 0;
                 vs->fl_floor = calloc(sizeof(int *), 4);
                 j = 0;
                 arr = ft_split(vs->texture[i][1], ',');
@@ -214,5 +245,5 @@ int parcer_map(t_vars *vs)
         i++;
     }
     free(arr);
-    return(1);
+     return(1);
 }

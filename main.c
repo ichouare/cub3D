@@ -21,6 +21,28 @@ void f_normalize_angle(t_vars *vars)
 }
 
 
+
+int mouse_callback(int x, int y, t_vars *param)
+{
+	static int prev_x = 0;
+	if(x > 0 &&  x <= window_width && y > 0 && y <= window_height)
+	{
+		if(x - prev_x < 0)
+		 param->player_angle -= 0.05;
+		else
+			param->player_angle += 0.05;
+	}
+	prev_x = x;
+	printf("%f", param->player_angle);
+	// else if(x > 0 &&  x <= window_width  &&  x > param->player_x)
+	// { 
+	// 		//puts("hereplyer");
+ 	// 		param->player_angle += 0.1;
+	// }
+	y = 0;
+	return (0);
+}
+
 int key_released(int keycode, t_vars *vars)
 {
  		vars->keys->key_A = 0;
@@ -316,7 +338,7 @@ void draw_wall(t_vars *vars, int i, double angle)
 	withrayon = i;
 	heightrayon = (windowHeight / 2) - (wallheightStrip / 2);
 	vars->wallStripHeight = wallheightStrip;
-	 ft_floor(vars, i,  0, i, heightrayon , create_trgb(1, vars->fl_ceil[0], vars->fl_ceil[1],vars->fl_ceil[2]));
+	ft_floor(vars, i,  0, i, heightrayon , create_trgb(1, vars->fl_ceil[0], vars->fl_ceil[1],vars->fl_ceil[2]));
 	// if(vars->store_map[(int)vars->dy / 64][(int)vars->dx / 64] == 'P')
 	// {
 
@@ -571,7 +593,7 @@ int ft_draw(t_vars *vars)
 
 mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->data->img, 0, 0);
 mlx_destroy_image(vars->mlx, vars->data->img);
-puts("here");
+//puts("here");
 printf("%d\n", h);
 if(h == 1)
 {
@@ -642,7 +664,7 @@ int	main(void)
 if (parcer_map(vars) == 0) 
 {
 	
-	puts("here55");
+	//puts("here55");
 	return 0;
 }
 	vars->mlx = mlx_init();
@@ -676,6 +698,8 @@ if (parcer_map(vars) == 0)
 	}
 	
 	mlx_hook(vars->mlx_win, 2, 1L << 2, &key_hook, vars);
+	mlx_hook(vars->mlx_win, 6,0, mouse_callback, vars);
+	//mlx_mouse_hook(vars->mlx_win, mouse_callback, vars);
 
 
 	mlx_hook(vars->mlx_win,3,  0, &key_released, vars);
