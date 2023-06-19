@@ -57,7 +57,7 @@ int ft_lastindex(char *str, int find)
     return -1;
 }
 
-int parcer_map(t_vars *vs)
+int parcer_map(t_vars *vs, char *file)
 {
     char *tmp = NULL;
     char **arr = NULL;
@@ -95,7 +95,6 @@ int parcer_map(t_vars *vs)
     {
         while(tmp[0] == '\n')
         {
-            printf("%s", tmp);
             free(tmp);
             tmp = get_next_line(fd1);
         }
@@ -246,7 +245,6 @@ int parcer_map(t_vars *vs)
                 arr = ft_split(vs->texture[i][1], ',');
                 while(j < 2)
                 {   
-                    //printf("%s", arr[j]);
                     vs->fl_ceil[j] = ft_atoi(arr[j]);
                     free(arr[j]);
                     j++;
@@ -268,7 +266,5 @@ int parcer_map(t_vars *vs)
         i++;
     }
     free(arr);
-    printf("|%s|", vs->img_N );
-    puts("hedsfre");
      return(1);
 }
