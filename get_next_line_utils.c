@@ -6,7 +6,7 @@
 /*   By: ichouare <ichouare@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 10:13:11 by ichouare          #+#    #+#             */
-/*   Updated: 2023/05/29 15:40:23 by ichouare         ###   ########.fr       */
+/*   Updated: 2023/06/19 15:23:11 by ichouare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ size_t	found_nl(const char *str, int c)
 	if (!str)
 		return (0);
 	i = 0;
-	while (str[i] != (char)c)
+	while (str[i] != (char)c && str[i])
 		i++;
 	return (i);
 }

@@ -100,4 +100,5 @@ int	    ft_atoi(const char *nptr);
 int parcer_map(t_vars *vs);
 int ft_draw(t_vars *vars);
 int	create_trgb(int t, int r, int g, int b);
+int ft_strlen(char *str);
 #endif

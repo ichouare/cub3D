@@ -6,7 +6,7 @@
 /*   By: ichouare <ichouare@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 10:13:14 by ichouare          #+#    #+#             */
-/*   Updated: 2023/05/30 15:45:15 by ichouare         ###   ########.fr       */
+/*   Updated: 2023/06/19 16:43:19 by ichouare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ static char	*heandler_next_line(char **svr, char *line)
 	if (ft_strchr(*svr, '\n'))
 	{
 		index = found_nl(*svr, '\n');
-		line = ft_substr(*svr, 0, index + 1);
+		line = ft_substr(*svr, 0, index);
 		tmp = *svr;
-		*svr = ft_substr(*svr, index + 1, found_nl(*svr, '\0') + 1);
+		*svr = ft_substr(*svr, index + 1, found_nl(*svr, '\0'));
 		free(tmp);
 	}
 	else

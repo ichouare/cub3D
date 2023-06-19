@@ -9,17 +9,20 @@
 int ft_catacter(char *str)
 {
     int i = 0;
-    while(str[i] != ' ' && str[i] != ' ')
+    int j = 0;
+    while(str[i])
     {
+        if(str[i] > 32 && str[i] < 127)
+            j++;
         i++;
     }
-    return i;
+    return j;
 }
 
 int ft_strlen(char *str)
 {
     int i = 0;
-    if(*str)
+    if(!str)
         return -1;
     while(str[i])
     {
@@ -74,34 +77,56 @@ int parcer_map(t_vars *vs)
     }
     if(i < 6)
         return 0;
-    vs->store_map = calloc(sizeof(char *), (i - 5));
-    vs->texture = calloc(sizeof(char *), 6);
+        vs->store_map = NULL;
+    vs->store_map = calloc(sizeof(char *), (i));
+    vs->texture = NULL;
+    vs->texture = calloc(sizeof(char **), 7);
     i = 0;
     while(i < 6)
     {
-        vs->texture[i] = calloc(sizeof(char *),1);
+        vs->texture[i] = calloc(sizeof(char *), 3);
         i++;
     }
     close(fd);
     i = 0;
     tmp = get_next_line(fd1);
     // stote data fo vs->texture in 2D array format
-    while(i < 6 && tmp != NULL)
+    while(tmp != NULL)
     {
-        if(tmp[0] != '\n' && ft_catacter(tmp) != 0)
+        while(tmp[0] == '\n')
         {
-            vs->texture[i] = ft_split(tmp, ' ');
-            i++;
+            printf("%s", tmp);
+            free(tmp);
+            tmp = get_next_line(fd1);
         }
-        free(tmp);
-        tmp = get_next_line(fd1);
-    }
+        // exit(0)
+        while(vs->texture[i])
+        {
+            if(tmp[0] != '\n' &&  ft_catacter(tmp) != 0)
+            {
+                printf("|%s|\n", tmp);
+                int j  = 0;
+                color = ft_split(tmp, ' ');
+                while(color[j])
+                    j++;
+                if(j != 2) 
+                {
+                    puts("ERROR: not valid texture");
+                    return (0);
+                }
+                vs->texture[i][0] = strdup(color[0]);
+                vs->texture[i][1] = strdup(ft_substr(color[1], 0, strlen(color[1])));
+                i++;
+            }
+            free(tmp);
+            tmp = get_next_line(fd1);
+        }
+    free(tmp);
     if(i != 6)
         return (0);
-    // store data of map items in 2D array  format
-    tmp = get_next_line(fd1);
     i = 0;
     int check = 0;
+    tmp = get_next_line(fd1);
     while(tmp != NULL)
     {
         if(tmp[0] != '\n')
@@ -114,13 +139,12 @@ int parcer_map(t_vars *vs)
         free(tmp);
         tmp = get_next_line(fd1);
     }
-    // free(tmp);
+    free(tmp);
+    }
     i = 0;
     int j = 0;
-    while(vs->texture[i])
+    while(i < 6)
     {
-
-       //printf("|%d|", ft_strlen(vs->texture[i][0]));
         if(strlen(vs->texture[i][0]) == 2)
         {
             if(strncmp(vs->texture[i][0], "NO", 2) == 0 || strncmp(vs->texture[i][0], "SO", 2) == 0
@@ -161,10 +185,10 @@ int parcer_map(t_vars *vs)
     // j = 0;
     i = 0;
     int k = 0;
-    while(vs->texture[i] != NULL)
+    while(i < 6)
     {
         k = 0;
-         while(vs->texture[k] != NULL)
+         while(k  < 6)
          {
             if(k == i)
               k++;
@@ -176,17 +200,15 @@ int parcer_map(t_vars *vs)
             k++;
          }  
          i++; 
-        puts("here");
     }
-    //puts("here");
-    puts("here");
+
     i = 0;
     close(fd);
-    while(vs->texture[i] != NULL)
+    while(i < 6)
     {
         if(strncmp(vs->texture[i][0], "F", 1) == 0 || strncmp(vs->texture[i][0], "C", 1) == 0)
         {
-            tmp = ft_substr(vs->texture[i][1], 0, strlen(vs->texture[i][1]) - 1);
+            tmp = ft_substr(vs->texture[i][1], 0, strlen(vs->texture[i][1]));
             if(tmp == NULL)
                 return(0);
             color = ft_split(tmp, ',');
@@ -207,25 +229,26 @@ int parcer_map(t_vars *vs)
     }
     i = 0;
      
-    while(vs->texture[i] != NULL)
+    while(i < 6)
     {
        if(strcmp(vs->texture[i][0], "NO") == 0)
-            vs->img_N = ft_substr(vs->texture[i][1], 0,found_nl(vs->texture[i][1], '\n'));
+            vs->img_N = ft_substr(vs->texture[i][1], 0,ft_strlen(vs->texture[i][1]) + 1);
        if(strcmp(vs->texture[i][0], "SO") == 0)
-            vs->img_S = ft_substr(vs->texture[i][1], 0,found_nl(vs->texture[i][1], '\n'));
+            vs->img_S = ft_substr(vs->texture[i][1], 0,ft_strlen(vs->texture[i][1]));
        if(strcmp(vs->texture[i][0], "WE") == 0)
-            vs->img_W = ft_substr(vs->texture[i][1], 0,found_nl(vs->texture[i][1], '\n'));
+            vs->img_W = ft_substr(vs->texture[i][1], 0,ft_strlen(vs->texture[i][1]));
        if(strcmp(vs->texture[i][0], "EA") == 0)
-            vs->img_E =ft_substr(vs->texture[i][1], 0,found_nl(vs->texture[i][1], '\n'));
+            vs->img_E =ft_substr(vs->texture[i][1], 0,ft_strlen(vs->texture[i][1]));
        if(strcmp(vs->texture[i][0], "F") == 0)
            {
                 vs->fl_ceil = calloc(sizeof(int *), 4);
                 j = 0;
                 arr = ft_split(vs->texture[i][1], ',');
-                while(j < 3)
+                while(j < 2)
                 {   
+                    //printf("%s", arr[j]);
                     vs->fl_ceil[j] = ft_atoi(arr[j]);
-                    // free(arr[j]);
+                    free(arr[j]);
                     j++;
                 }
 
@@ -235,9 +258,9 @@ int parcer_map(t_vars *vs)
                 vs->fl_floor = calloc(sizeof(int *), 4);
                 j = 0;
                 arr = ft_split(vs->texture[i][1], ',');
-                while(j < 3)
+                while(j < 2)
                 {   
-                    vs->fl_floor[j] = ft_atoi(arr[j]);
+                   vs->fl_floor[j] = ft_atoi(arr[j]);
                     free(arr[j]);
                     j++;
                 }
@@ -245,5 +268,7 @@ int parcer_map(t_vars *vs)
         i++;
     }
     free(arr);
+    printf("|%s|", vs->img_N );
+    puts("hedsfre");
      return(1);
 }

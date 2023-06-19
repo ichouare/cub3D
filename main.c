@@ -21,7 +21,6 @@ void f_normalize_angle(t_vars *vars)
 }
 
 
-
 int mouse_callback(int x, int y, t_vars *param)
 {
 	static int prev_x = 0;
@@ -111,12 +110,12 @@ int ft_steps(t_vars *vars, double angle)
 	}
 	stepsx = stepsy / tan(angle);
 		while(
-		vars->dy >= 0 
-		&& vars->dy/64 < 14
-		&& vars->dx/64 >=  0 
-		&& vars->dx/64 < 33
-		&&  (int)vars->dx/64 < (int)strlen(vars->store_map[(int)vars->dy / 64])
-		&& vars->store_map[(int)(vars->dy + offset) / 64][(int)(vars->dx ) / 64] != '1')
+		(vars->dy + offset ) >= 0 
+		&& (vars->dy + offset ) / 64 < 14
+		&& (vars->dx) / 64 >=  0 
+		&& (vars->dx )/64 < 33
+		&&  (int)(vars->dx) /64 < (int)strlen(vars->store_map[(int)(vars->dy +offset ) / 64])
+		&& vars->store_map[(int)((vars->dy + offset) / 64)][(int)(vars->dx ) / 64] != '1')
 		{
 				vars->dx += stepsx;
 				vars->dy += stepsy;
@@ -154,10 +153,10 @@ int ft_stepsV(t_vars *vars, double angle)
 	}
 	stepsy = stepsx * tan(angle);
 	while((int)(vars->dyV) >= 0 
-	&& vars->dyV /64< 14
-	&& (int)(vars->dxV) >=  0 
-	&& vars->dxV/64 < 33
-	&&  (int)vars->dxV/64 < (int)strlen(vars->store_map[(int)vars->dyV / 64])
+	&& (vars->dyV / 64) < 14
+	&& (int)(vars->dxV + offset) >=  0 
+	&& (vars->dxV + offset )/64 < 33
+	&&  (int)(vars->dxV + offset)/64 < (int)ft_strlen(vars->store_map[(int)vars->dyV / 64])
 	  && vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] != '1')
 		{
 				vars->dxV += stepsx;
@@ -595,17 +594,17 @@ mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->data->img, 0, 0);
 mlx_destroy_image(vars->mlx, vars->data->img);
 //puts("here");
 printf("%d\n", h);
-if(h == 1)
-{
-	// puts("here_1");
-	// exit(0);
-	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->attack_img, window_width / 2, window_height - 170);
-}
-else
-{
-	// puts("here_2");
-	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->attack_img, window_width / 2, window_height - 200);
-}
+// if(h == 1)
+// {
+// 	// puts("here_1");
+// 	// exit(0);
+// 	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->attack_img, window_width / 2, window_height - 170);
+// }
+// else
+// {
+// 	// puts("here_2");
+// 	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->attack_img, window_width / 2, window_height - 200);
+// }
 //mlx_destroy_image(vars->mlx, vars->attack_img);
 		vars->keys->key_A = 0;
  		vars->keys->key_w = 0;
@@ -656,25 +655,23 @@ int	main(void)
 	vars->data = malloc(sizeof(t_data));
 	int height;
 	int width;
-	vars->img_E = "./wall_N.xpm";
-	// vars->img_W = "./path_to_the_west_texture.xpm";
-	// vars->img_S = "./path_to_the_south_texture.xpm";
-	vars->img_N = "./path_to_the_north_texture.xpm";
-	vars->attack = "./attack.xpm";
+
 if (parcer_map(vars) == 0) 
 {
 	
-	//puts("here55");
+	puts("here55");
 	return 0;
 }
+	puts("starty");
 	vars->mlx = mlx_init();
 	vars->texture_N = mlx_xpm_file_to_image(vars->mlx,vars->img_E, &width, &height);
 	vars->texture_E = mlx_xpm_file_to_image(vars->mlx,vars->img_N, &width, &height);
-	vars->attack_img= mlx_xpm_file_to_image(vars->mlx,vars->attack, &width, &height);
-	// vars->texture_S = mlx_xpm_file_to_image(vars->mlx,vars->img_S, &width, &height);
-	// vars->texture_W = mlx_xpm_file_to_image(vars->mlx,vars->img_W, &width, &height);
-	if(vars->texture_E  == NULL || vars->attack_img == NULL)
+	// vars->attack_img= mlx_xpm_file_to_image(vars->mlx,vars->attack, &width, &height);
+	vars->texture_S = mlx_xpm_file_to_image(vars->mlx,vars->img_S, &width, &height);
+	vars->texture_W = mlx_xpm_file_to_image(vars->mlx,vars->img_W, &width, &height);
+	if(vars->texture_E  == NULL || vars->texture_N  == NULL|| vars->texture_S  == NULL || vars->texture_W  == NULL)
 	{
+		puts("pics");
 		exit(0);
 	}
 	vars->mlx_win = mlx_new_window(vars->mlx, window_width , window_height, "unrecorded");
