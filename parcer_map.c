@@ -4,7 +4,23 @@
 #include <stdio.h>
 #include "get_next_line.h"
 
+void ft_free2d(char **array)
+{
+    int i = 0;
+    // int j = 0;
+    while(array[i])
+    {
+            free(array[i]);
+        // j = 0;
+        // while(array[i][j])
+        // {
+        //      j++;
+        // }
+        i++;
+    }
+    free(array);
 
+}
 
 int ft_catacter(char *str)
 {
@@ -63,8 +79,8 @@ int parcer_map(t_vars *vs, char *file)
     char **arr = NULL;
     char **color = NULL;
     int i = 0;
-    int fd= open("./map/map.cub", O_RDONLY);
-    int fd1 = open("./map/map.cub", O_RDONLY);
+    int fd= open(file, O_RDONLY);
+    int fd1 = open(file, O_RDONLY);
     tmp = calloc(2, sizeof(char ));
     if(fd < 0)
         return -1;
@@ -75,6 +91,7 @@ int parcer_map(t_vars *vs, char *file)
         free(tmp);
         tmp = get_next_line(fd);
     }
+    free(tmp);
     if(i < 6)
         return 0;
         vs->store_map = NULL;
@@ -103,7 +120,7 @@ int parcer_map(t_vars *vs, char *file)
         {
             if(tmp[0] != '\n' &&  ft_catacter(tmp) != 0)
             {
-                printf("|%s|\n", tmp);
+
                 int j  = 0;
                 color = ft_split(tmp, ' ');
                 while(color[j])
@@ -115,21 +132,24 @@ int parcer_map(t_vars *vs, char *file)
                 }
                 vs->texture[i][0] = strdup(color[0]);
                 vs->texture[i][1] = strdup(ft_substr(color[1], 0, strlen(color[1])));
+                ft_free2d(color);
                 i++;
             }
             free(tmp);
             tmp = get_next_line(fd1);
         }
-    free(tmp);
+    //free(tmp);
     if(i != 6)
         return (0);
     i = 0;
     int check = 0;
-    tmp = get_next_line(fd1);
+    //tmp = get_next_line(fd1);
     while(tmp != NULL)
     {
-        if(tmp[0] != '\n')
+        if(ft_catacter(tmp) != 0)
+        {
             check = 1;
+        }
         if(check == 1)
         {
             vs->store_map[i] = strdup(tmp);
@@ -222,6 +242,7 @@ int parcer_map(t_vars *vs, char *file)
                 }
                 j++;
             }
+            ft_free2d(color);
         }
 
         i++;
@@ -240,31 +261,47 @@ int parcer_map(t_vars *vs, char *file)
             vs->img_E =ft_substr(vs->texture[i][1], 0,ft_strlen(vs->texture[i][1]));
        if(strcmp(vs->texture[i][0], "F") == 0)
            {
-                vs->fl_ceil = calloc(sizeof(int *), 4);
+                vs->fl_ceil = calloc(sizeof(int), 4);
                 j = 0;
                 arr = ft_split(vs->texture[i][1], ',');
-                while(j < 2)
+                while(j < 3)
                 {   
                     vs->fl_ceil[j] = ft_atoi(arr[j]);
                     free(arr[j]);
                     j++;
                 }
+                free(arr);
 
            }
         if(strcmp(vs->texture[i][0], "C") == 0)
            {
-                vs->fl_floor = calloc(sizeof(int *), 4);
+                vs->fl_floor = calloc(sizeof(int ), 4);
                 j = 0;
                 arr = ft_split(vs->texture[i][1], ',');
-                while(j < 2)
+                while(j < 3)
                 {   
                    vs->fl_floor[j] = ft_atoi(arr[j]);
                     free(arr[j]);
                     j++;
                 }
+                free(arr);
            }
         i++;
     }
-    free(arr);
+    i = 0;
+    while(i < 6)
+    {
+        ft_free2d(vs->texture[i]);
+        i++;
+    }
+    free(vs->texture);
+    // i = 0;
+    // while (vs->store_map[i])
+    // {
+    //     printf("%s\n", vs->store_map[i]);
+    //     i++;
+    //     /* code */
+    // }
+    // exit(0);
      return(1);
 }

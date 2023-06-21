@@ -57,6 +57,8 @@ typedef struct vars{
     t_data *data;
     double hitH;
     double hitV;
+    double hitHD;
+    double hitVD;
     int *fl_floor;
     int *fl_ceil;
     int doors; //
@@ -73,19 +75,42 @@ typedef struct vars{
     void *img_S;
     void *img_W;
     void *img_E;
+    void *img1;
+    void *img2;
+    void *img3;
     void *attack;
     void *attack_img;
     void *sprite;
     int height;
 	int width;
+    void *doors1;
+    void *doors6;
+    void *doors2;
+    void *frame1;
+    void *frame6;
+    void *frame2;
     double dy;
+    double dyD;
+    double dxD;
+    double dyVD;
+    double dxVD;
+
 
     
 
 } t_vars;
 
 
+typedef struct {
+    double x;  // Sprite x-coordinate in game world
+    double y;  // Sprite y-coordinate in game world
+} t_sprite;
 
+
+typedef struct {
+    float timer;      // Timer for the door animation (0 to 1)
+    int code;         // Special integer code for the door (0 to 3)
+} t_Door;
 
 
 size_t	found_nl(const char *str, int c);
@@ -97,7 +122,7 @@ void	*ft_calloc(size_t number, size_t size);
 char	*get_next_line(int fd);
 char	**ft_split(char const *s, char c);
 int	    ft_atoi(const char *nptr);
-int parcer_map(t_vars *vs);
+int parcer_map(t_vars *vs, char *file);
 int ft_draw(t_vars *vars);
 int	create_trgb(int t, int r, int g, int b);
 int ft_strlen(char *str);
