@@ -1,6 +1,9 @@
 #include "get_next_line.h"
 
-
+double *distances;
+double *distancesoff;
+int inc = 0;
+int inV= 0;
 double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
 #define window_width 1920
 #define window_height 1080
@@ -121,6 +124,7 @@ int ft_steps(t_vars *vars, double angle, int str)
 	double dx = 0;
 	double dy = 0;
 	int offset = 0;
+	// inc  = 0;
 	
 	
 	dy = (int)((vars->player_y) / 64) * 64;
@@ -149,6 +153,16 @@ int ft_steps(t_vars *vars, double angle, int str)
 		&& vars->store_map[(int)((vars->dy + offset) / 64)][(int)(vars->dx ) / 64] != str
 		)
 		{
+			if(vars->store_map[(int)((vars->dy + offset) / 64)][(int)(vars->dx ) / 64] == 'P')
+			{
+				distances[inc] =  sqrt(pow(vars->dx - vars->player_x, 2) + pow(vars->dy - vars->player_y, 2));
+				distancesoff[inc] = vars->dx;
+				//  = vars->hitHD;
+				//("%f\n", distances[inc]);
+				inc++;
+				// if(vars->hitHD  > 32)
+				// 	return (1);
+			}
 				vars->dx += stepsx;
 				vars->dy += stepsy;
 		}	
@@ -156,51 +170,60 @@ int ft_steps(t_vars *vars, double angle, int str)
 	return 0;
 }
 
-int ft_steps_doors(t_vars *vars, double angle)
-{
-	double stepsx = 0;
-	double stepsy = 0;
-	double dx = 0;
-	double dy = 0;
-	int offset = 0;
+// int ft_steps_doors(t_vars *vars, double angle)
+// {
+// 	double stepsx = 0;
+// 	double stepsy = 0;
+// 	double dx = 0;
+// 	double dy = 0;
+// 	int offset = 0;
 	
 	
-	dy = (int)((vars->player_y) / 64) * 64;
-	if(sin(angle) > 0)
-	{
-		dy += 64; 
-	}
-	dx =  (vars->player_x) + ((dy - (vars->player_y)) / tan(angle));
-	vars->dxD = dx;
-	vars->dyD = dy;
 	
-	stepsy =  64;
+	
+// 	dy = (int)((vars->player_y) / 64) * 64;
+// 	if(sin(angle) > 0)
+// 	{
+// 		dy += 64; 
+// 	}
+// 	dx =  (vars->player_x) + ((dy - (vars->player_y)) / tan(angle));
+// 	vars->dxD = dx;
+// 	vars->dyD = dy;
+	
+// 	stepsy =  64;
 
-	if(sin(angle) <= 0)
-	{
-		stepsy = -64;
-		offset = 0;
-	}
-	stepsx = stepsy / tan(angle);
-		while(
-		(vars->dyD + offset ) >= 0 
-		&& (vars->dyD + offset ) / 64 < 14
-		&& (vars->dxD) / 64 >=  0 
-		&& (vars->dxD )/64 < 33
-		&&  (int)(vars->dxD) /64 < (int)strlen(vars->store_map[(int)(vars->dyD +offset ) / 64]))
-		{
-			if(vars->store_map[(int)((vars->dyD + offset) / 64)][(int)(vars->dxD ) / 64] == 'P')
-			{
-				vars->hitHD = sqrt(pow(vars->dxD - vars->player_x, 2) + pow(vars->dyD - vars->player_y, 2));
-				return (1);
-			}
-				// return 1;
-				vars->dxD += stepsx;
-				vars->dyD += stepsy;
-		}
-	vars->hitHD = -1;	
-	return 0;
-}
+// 	if(sin(angle) <= 0)
+// 	{
+// 		stepsy = -64;
+// 		offset = 0;
+// 	}
+// 	stepsx = stepsy / tan(angle);
+// 		while(
+// 		(vars->dyD + offset ) >= 0 
+// 		&& (vars->dyD + offset ) / 64 < 14
+// 		&& (vars->dxD) / 64 >=  0 
+// 		&& (vars->dxD )/64 < 33
+// 		&&  (int)(vars->dxD) /64 < (int)strlen(vars->store_map[(int)(vars->dyD +offset ) / 64])
+// 		&& vars->store_map[(int)((vars->dyD + offset) / 64)][(int)(vars->dxD ) / 64] != '1')
+// 		{
+// 			if(vars->store_map[(int)((vars->dyD + offset) / 64)][(int)(vars->dxD ) / 64] == 'P')
+// 			{
+// 				vars->hitHD = sqrt(pow(vars->dxD - vars->player_x, 2) + pow(vars->dyD - vars->player_y, 2));
+// 				distances[inc] = vars->hitHD;
+// 				// printf("%f\n", distances[inc]);
+// 				inc++;
+// 				// if(vars->hitHD  > 32)
+// 				// 	return (1);
+// 			}
+// 				// return 1;
+// 				vars->dxD += stepsx;
+// 				vars->dyD += stepsy;
+// 		}
+// 	// vars->hitHD = -1;	
+// 	if(inc != 0)
+// 		return (1);
+// 	return 0;
+// }
 
 
 int ft_stepsV(t_vars *vars, double angle , int str)
@@ -210,6 +233,8 @@ int ft_stepsV(t_vars *vars, double angle , int str)
 	double dx = 0;
 	double dy = 0;
 	int offset = 0;
+	// inV = 0;
+	
 
 	dx = (floor)(vars->player_x / 64) * 64;
 	if(cos(angle) > 0)
@@ -233,51 +258,74 @@ int ft_stepsV(t_vars *vars, double angle , int str)
 	&&  (int)(vars->dxV + offset)/64 < (int)ft_strlen(vars->store_map[(int)vars->dyV / 64])
 	&& vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] != str)
 		{
+			if(vars->store_map[(int)vars->dyV / 64][(int)(vars->dxV + offset) / 64] == 'P')
+			{
+				
+	 			distances[inc] = sqrt(pow(vars->dxV - vars->player_x, 2) + pow(vars->dyV - vars->player_y, 2));
+				distancesoff[inc] = vars->dyV;
+				// if(distances[inc] > vars->hitVD)
+				// {
+					//  = vars->hitVD;
+					//printf("hitVD = %f\n", distancesV[inV]);
+					inc++;
+					// exit(0);
+				// }
+				
+			}
 				vars->dxV += stepsx;
 				vars->dyV += stepsy;	
 		}
 	 vars->hitV = sqrt(pow(vars->dxV - vars->player_x, 2) + pow(vars->dyV - vars->player_y, 2));
 	return 0;
 }
-int ft_stepsV_doors(t_vars *vars, double angle)
-{
-	double stepsx = 0;
-	double stepsy = 0;
-	double dx = 0;
-	double dy = 0;
-	int offset = 0;
-	dx = (floor)(vars->player_x / 64) * 64;
-	if(cos(angle) > 0)
-	{
-			dx += 64;
-	}
-	dy = tan(angle) * (dx - vars->player_x) + vars->player_y;
-	vars->dxVD = dx;
-	vars->dyVD = dy;
-	stepsx +=  64;
-	if(cos(angle) < 0)
-	{
-		stepsx *= -1;
-		 offset = -1;
-	}
-	stepsy = stepsx * tan(angle);
-	while((int)(vars->dyVD) >= 0 
-	&& (vars->dyVD / 64) < 14
-	&& (int)(vars->dxVD + offset) >=  0 
-	&& (vars->dxVD + offset )/ 64 < 33
-	&&  (int)(vars->dxVD + offset)/ 64 < (int)ft_strlen(vars->store_map[(int)vars->dyVD / 64]))
-		{
-			if(vars->store_map[(int)vars->dyVD / 64][(int)(vars->dxVD + offset) / 64] == 'P')
-			{
-	 			vars->hitVD = sqrt(pow(vars->dxVD - vars->player_x, 2) + pow(vars->dyVD - vars->player_y, 2));
-				return 1;
-			}
-				vars->dxVD += stepsx;
-				vars->dyVD += stepsy;	
-		}
-	vars->hitVD = -1;
-	return 0;
-}
+
+
+// int ft_stepsV_doors(t_vars *vars, double angle)
+// {
+// 	double stepsx = 0;
+// 	double stepsy = 0;
+// 	double dx = 0;
+// 	double dy = 0;
+// 	int offset = 0;
+// 	inc = 0;
+
+
+// 	dx = (floor)(vars->player_x / 64) * 64;
+// 	if(cos(angle) > 0)
+// 	{
+// 			dx += 64;
+// 	}
+// 	dy = tan(angle) * (dx - vars->player_x) + vars->player_y;
+// 	vars->dxVD = dx;
+// 	vars->dyVD = dy;
+// 	stepsx +=  64;
+// 	if(cos(angle) < 0)
+// 	{
+// 		stepsx *= -1;
+// 		 offset = -1;
+// 	}
+// 	stepsy = stepsx * tan(angle);
+// 	while((int)(vars->dyVD) >= 0 
+// 	&& (vars->dyVD / 64) < 14
+// 	&& (int)(vars->dxVD + offset) >=  0 
+// 	&& (vars->dxVD + offset )/ 64 < 33
+// 	&&  (int)(vars->dxVD + offset)/ 64 < (int)ft_strlen(vars->store_map[(int)vars->dyVD / 64])
+// 	&& vars->store_map[(int)vars->dyVD / 64][(int)(vars->dxVD + offset) / 64] != '1')
+// 		{
+// 			if(vars->store_map[(int)vars->dyVD / 64][(int)(vars->dxVD + offset) / 64] == 'P')
+// 			{
+// 	 			vars->hitVD = sqrt(pow(vars->dxVD - vars->player_x, 2) + pow(vars->dyVD - vars->player_y, 2));
+// 				distancesV[inc] = vars->hitVD;
+// 				inc++;
+// 			}
+// 				vars->dxVD += stepsx;
+// 				vars->dyVD += stepsy;	
+// 		}
+// 	// vars->hitVD = -1;
+// 	if(inc != 0)
+// 		return (1);
+// 	return 0;
+// }
 
 int get_texture_color(t_data *texture, int x, int y) {
   int byte_offset = (y * texture->line_length) + (x * (texture->bits_per_pixel / 8));
@@ -296,6 +344,7 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	char	*dst;
 
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	
 	*(unsigned int*)dst = color;
 }
 
@@ -377,7 +426,7 @@ void ft_test(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img)
 	}
 }
 
-void ft_doors(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img)
+void ft_doors(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img, double offset)
 {
 	int dtx = 0;
 	int dty = 0;
@@ -403,12 +452,12 @@ void ft_doors(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img
 		steps = abs((int)(dty));
 	xinc = (double)dtx / (double)steps;
 	yinc = (double)dty / (double)steps;
-	if(vars->hitHD <= vars->hitVD ||  vars->hitVD == -1)
-	{
-		offsetx = (fmod(vars->dxD , 64)/64.0) * 64;
-	}
-	else
-		offsetx = (fmod(vars->dyVD, 64)/64.0) * 64;
+	// if(vars->hitHD <= vars->hitVD ||  vars->hitVD == -1)
+	// {
+		offsetx = (fmod(offset , 64)/64.0) * 64;
+	// }
+	// else
+	// 	offsetx = (fmod(vars->dy, 64)/64.0) * 64;
 	while(m <= steps)
 	{
 		if(y < 0 || y >= window_height)
@@ -417,7 +466,11 @@ void ft_doors(t_vars *vars, double x, double y, double Dx, double Dy,t_data *img
 			x = 0;
 		offsety = abs((int)(y - walltopixel)) * ((double)(64) / (Dy - walltopixel));
 		buf = img->addr + (offsety * img->line_length + offsetx * (int)(img->bits_per_pixel / 8));
-		my_mlx_pixel_put(vars->data,(int)x  , (int)y  ,  *(unsigned int *)buf);
+		if(*(unsigned int*)(buf) != 0)
+		{
+			
+			my_mlx_pixel_put(vars->data,(int)x  , (int)y  ,  *(unsigned int *)buf);
+		}
 		x += xinc;
 		y += yinc;
 		m++;
@@ -463,9 +516,9 @@ void draw_wall(t_vars *vars, int i, double angle)
 				else
 				{
 
-						img->img = vars->texture_N;
-						img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
-						ft_test(vars, i, heightrayon, i, (windowHeight / 2 ) + (wallheightStrip / 2), img);
+					img->img = vars->texture_N;
+					img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
+					ft_test(vars, i, heightrayon, i, (windowHeight / 2 ) + (wallheightStrip / 2), img);
 				}
 				
 
@@ -489,24 +542,79 @@ void draw_wall(t_vars *vars, int i, double angle)
 			ft_floor(vars, i,  heightrayon + wallheightStrip, i,window_height, create_trgb(5, vars->fl_floor[0], vars->fl_floor[1], vars->fl_floor[2]));
 	}
 
-void draw_doors(t_vars *vars, int i, double angle)
+// void draw_doors(t_vars *vars, int i, double angle)
+// {
+// 	double withrayon = 0;
+// 	double heightrayon = 0;
+// 	double rayDistance = 0;
+// 	double doors_distance = 0;
+// 	t_data *img;
+// 	img =  malloc(sizeof(t_data));
+// 	if(vars->hitHD == -1)
+// 	{
+// 		rayDistance = vars->hitVD * cos(angle - vars->player_angle) ;
+// 		doors_distance = vars->hitVD;
+// 	}
+// 	else if(vars->hitVD == -1)
+// 	{
+// 		rayDistance = vars->hitHD * cos(angle - vars->player_angle);
+// 		doors_distance = vars->hitHD;
+// 	}
+// 	else
+// 	{
+// 	if(vars->hitHD > vars->hitVD) 
+// 	{
+// 		rayDistance = vars->hitVD * cos(angle - vars->player_angle) ;
+// 		doors_distance = vars->hitVD;
+// 	}
+// 	else
+// 	{
+// 		rayDistance = vars->hitHD * cos(angle - vars->player_angle);
+// 		doors_distance = vars->hitVD;
+// 	}
+// 	}
+// 	double windowWith = window_width;
+//  double windowHeight = window_height;
+// 	double wallheightStrip = 0;
+// 	double distancetopeoject = (double)(windowWith / 2) / tan(30 * (PI / 180));
+// 	wallheightStrip = (((double)64 * distancetopeoject ) / rayDistance);
+// 	withrayon = i;
+// 	heightrayon = (windowHeight / 2) - (wallheightStrip / 2);
+// 	vars->wallStripHeight = wallheightStrip;
+// 	ft_floor(vars, i,  0, i, heightrayon , create_trgb(1, vars->fl_ceil[0], vars->fl_ceil[1],vars->fl_ceil[2]));
+// 	img->img = vars->frame1;
+// 	img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
+// 	ft_doors(vars, i, heightrayon, i, (windowHeight / 2 ) + (wallheightStrip / 2), img);
+// 		ft_floor(vars, i,  heightrayon + wallheightStrip, i,window_height, create_trgb(5, vars->fl_floor[0], vars->fl_floor[1], vars->fl_floor[2]));
+// }
+
+void draw_close_doors(t_vars *vars, int i, double angle, double rayDistance, double offset)
 {
 	double withrayon = 0;
 	double heightrayon = 0;
-	double rayDistance = 0;
+	//double rayDistance = 0;
 	t_data *img;
 	img =  malloc(sizeof(t_data));
-	if(vars->hitHD == -1)
-		rayDistance = vars->hitVD * cos(angle - vars->player_angle) ;
-	else if(vars->hitVD == -1)
-		rayDistance = vars->hitHD * cos(angle - vars->player_angle);
-	else
-	{
-	if(vars->hitHD > vars->hitVD) 
-		rayDistance = vars->hitVD * cos(angle - vars->player_angle) ;
-	else
-		rayDistance = vars->hitHD * cos(angle - vars->player_angle);
-	}
+	// rayDistance *=  cos(angle - vars->player_angle) ;
+
+	// if(vars->hitHD == -1)
+	// else if(vars->hitVD == -1)
+	// 	rayDistance = vars->hitHD * cos(angle - vars->player_angle);
+	// else
+	// {
+	// if(distances[t] > distancesV[t]) 
+	// {
+
+	// 	rayDistance = distancesV[t] * cos(angle - vars->player_angle) ;
+	// 	// puts(" vertical ray distance");
+	// }
+	// else
+	// {
+		rayDistance *= cos(angle - vars->player_angle);
+		// puts("Horizontal ray distance");
+		// exit(0);
+	// }
+	
 	double windowWith = window_width;
  double windowHeight = window_height;
 	double wallheightStrip = 0;
@@ -515,15 +623,22 @@ void draw_doors(t_vars *vars, int i, double angle)
 	withrayon = i;
 	heightrayon = (windowHeight / 2) - (wallheightStrip / 2);
 	vars->wallStripHeight = wallheightStrip;
-	ft_floor(vars, i,  0, i, heightrayon , create_trgb(1, vars->fl_ceil[0], vars->fl_ceil[1],vars->fl_ceil[2]));
-	if(rayDistance > 100)
-		{
-			img->img = vars->frame1;
-			img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
-			ft_doors(vars, i, heightrayon, i, (windowHeight / 2 ) + (wallheightStrip / 2), img);
-		}
-		ft_floor(vars, i,  heightrayon + wallheightStrip, i,window_height, create_trgb(5, vars->fl_floor[0], vars->fl_floor[1], vars->fl_floor[2]));
+	//ft_floor(vars, i,  0, i, heightrayon , create_trgb(1, vars->fl_ceil[0], vars->fl_ceil[1],vars->fl_ceil[2]));
+	if(rayDistance > 32 &&  rayDistance < 100)
+	{
+		img->img = vars->frame1;
+		img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
+	ft_doors(vars, i, heightrayon, i, (windowHeight / 2 ) + (wallheightStrip / 2), img, offset);
 	}
+	else if(rayDistance > 100)
+	{
+		img->img = vars->frame2;
+		img->addr = mlx_get_data_addr(img->img,  &img->bits_per_pixel, &img->line_length, &img->endian);
+		ft_doors(vars, i, heightrayon, i, (windowHeight / 2 ) + (wallheightStrip / 2), img, offset);
+	}
+	
+	//ft_floor(vars, i,  heightrayon + wallheightStrip, i,window_height, create_trgb(5, vars->fl_floor[0], vars->fl_floor[1], vars->fl_floor[2]));
+}
 
 void ft_move(t_vars *vars)
 {
@@ -688,8 +803,11 @@ int ft_draw(t_vars *vars)
 	vars->hitVD = 0;
 	int i = 0;
 	int j = 0;
+	// inc = 0;
+	// inV = 0;
+	// int x  = 0;
 	double Distance_wall = 0;
-	double Distance_doors = 0;
+	// double Distance_doors = 0;
 	int column = 0;
 	vars->data->img = mlx_new_image(vars->mlx, window_width, window_height);
 	vars->sprite = mlx_new_image(vars->mlx, 64, 64);
@@ -709,58 +827,82 @@ int ft_draw(t_vars *vars)
 				while(column < vars->num_rays)
 					{
 					 
+					 distances = calloc(sizeof(double), (33 * 14));
+					 distancesoff = calloc(sizeof(double), (33 * 14));
+					//  distancesV  = calloc(sizeof(double), (33 * 14));
 					ft_steps(vars, angle, '1');
 					ft_stepsV(vars,  angle,'1');
-					ft_steps_doors(vars, angle);
-					ft_stepsV_doors(vars, angle);
-					if(vars->hitHD !=  -1 || vars->hitVD != -1)
-					{
-						if(vars->hitH > vars->hitV)
-							Distance_wall = vars->hitV;
-						else
-							Distance_wall = vars->hitH;
-						if(vars->hitHD == -1)
-							Distance_doors = vars->hitVD;
-						else if(vars->hitVD == -1)
-							Distance_doors = vars->hitHD;
-						else if(vars->hitHD > vars->hitVD)
-							Distance_doors = vars->hitVD;
-						else
-							Distance_doors = vars->hitHD;
-						if(Distance_doors < 30)
-							draw_wall(vars, column, angle);
-						else if(Distance_wall < Distance_doors)
-							draw_wall(vars, column, angle);
-						else
+					 draw_wall(vars, column, angle);
+					// ft_steps_doors(vars, angle);
+					// ft_stepsV_doors(vars, angle);
+					// inc--;
+					// inV--;
+					// if(inc  != 0 || inV != 0)
+					// {
+						// if( inc != 0)
+						// {
+						// printf("%d", inc);
+						// // exit(0);
+
+						// }
+						// while(inc > 0)
+						// {
+						// 	printf("%f\n",distances[inc] );
+						// 	inc--;
+						// }
+						// int x = 0;
+					// 	// int y = 0;
+						while(inc >= 0)
 						{
-							draw_doors(vars, column, angle);
-						}
-					}
-					else 
-							draw_wall(vars, column, angle);
+								if(vars->hitH < vars->hitV)
+									Distance_wall = vars->hitH;
+								else
+									Distance_wall = vars->hitV;
+
+								if(distances[inc] <  Distance_wall)
+									draw_close_doors(vars, column, angle, distances[inc], distancesoff[inc]);
+
+			
+								inc--;
+					
+					 }
+					free(distances);
+					free(distancesoff);
+					// free(distancesV);
+					inc = 0;
+					inV = 0;
+					// 	// inc = 0;
+					// //exit(0);
+					// 	// if(vars->hitH > vars->hitV)
+					// 	// 	Distance_wall = vars->hitV;
+					// 	// else
+					// 	// 	Distance_wall = vars->hitH;
+					// 	// if(vars->hitHD == -1)
+					// 	// 	Distance_doors = vars->hitVD;
+					// 	// else if(vars->hitVD == -1)
+					// 	// 	Distance_doors = vars->hitHD;
+					// 	// else if(vars->hitHD > vars->hitVD)
+					// 	// 	Distance_doors = vars->hitVD;
+					// 	// else
+					// 	// 	Distance_doors = vars->hitHD;
+					// 	// // if(Distance_doors < 5)
+					// 	// // 	draw_wall(vars, column, angle);
+					// 	// if(Distance_wall < Distance_doors)
+					// 	// 	draw_wall(vars, column, angle);
+					// 	// else if(Distance_doors < 70)
+					// 	// {
+					// 	// 	draw_doors(vars, column, angle);
+					// 	// }
+					// 	// else
+					// 	// 	draw_close_doors(vars, column, angle);
+					// }
 
 					vars->hitH = 0;
 					vars->hitV = 0;
-			
 					angle += vars->field_of_view / vars->num_rays;
 					column++;
 					}
-			angle = vars->player_angle - (vars->field_of_view / 2.0);
-			column = 0;
-			// while(column < vars->num_rays)
-			// 		{
-					 
-			// 		if(ft_stepsV_doors(vars,  angle) == 1)
-			// 		{
-			// 			draw_doors(vars, column, angle);
-			// 		}
-			// 		vars->hitH = 0;
-			// 		vars->hitV = 0;
-			// 		angle += vars->field_of_view / vars->num_rays;
-				
-			// 		column++;
-			// 		}
-			
+	
 			}
 			j++;
 		
@@ -842,7 +984,7 @@ int	main(int argc, char **argv)
 	vars->img1 = "./img1.xpm";
 	vars->img2 = "./img2.xpm";
 	vars->img3 = "./img3.xpm";
-	vars->doors1 = "./pics1.xpm";
+	vars->doors1 = "./DOOR_1A.xpm";
 	vars->doors6 = "./pics2.xpm";
 	vars->doors2 = "./pics3.xpm";
 	vars->keys = malloc(sizeof(t_keys));
@@ -870,7 +1012,7 @@ if (parcer_map(vars, argv[1]) == 0)
 	vars->texture_W = mlx_xpm_file_to_image(vars->mlx,vars->img_W, &width, &height);
 	vars->frame1 = mlx_xpm_file_to_image(vars->mlx,vars->doors1, &width, &height);
 	vars->frame6 = mlx_xpm_file_to_image(vars->mlx,vars->doors6, &width, &height);
-	vars->frame2 = mlx_xpm_file_to_image(vars->mlx,vars->doors2, &width, &height);
+	vars->frame2 = mlx_xpm_file_to_image(vars->mlx,vars->doors6, &width, &height);
 	if(vars->texture_E  == NULL || vars->texture_N  == NULL|| vars->texture_S  == NULL || vars->texture_W  == NULL  || vars->attack_img  == NULL)
 	{
 		puts("pics");

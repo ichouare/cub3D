@@ -108,8 +108,8 @@ typedef struct {
 
 
 typedef struct {
-    float timer;      // Timer for the door animation (0 to 1)
-    int code;         // Special integer code for the door (0 to 3)
+    double distance;      // Timer for the door animation (0 to 1)
+    double offset;         // Special integer code for the door (0 to 3)
 } t_Door;
 
 
